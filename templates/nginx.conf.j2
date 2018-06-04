@@ -1,5 +1,5 @@
 server {
-    server_name {{item.domain}};
+    server_name {{item.domain}} www.{{item.domain}};
 
     root {{path_base}}/{{item.domain}}/public;
     access_log {{path_base}}/{{item.domain}}/log/access.log combined buffer=256k flush=60m;
