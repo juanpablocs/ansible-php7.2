@@ -1,0 +1,34 @@
+---
+- name: Add utils
+  yum: name=yum-utils state=present
+
+- name: Install php7
+  yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm state=present
+
+- name: Enable php7.2
+  command: yum-config-manager --enable remi-php72
+
+- name: Install fpm, curl, opcache...
+  yum: name={{item}} state=present
+  with_items:
+    - php
+    - php-common
+    - php-opcache
+    - php-mcrypt
+    - php-cli
+    - php-gd
+    - php-curl
+    - php-fpm
+
+- name: replace user for nginx
+  replace:
+    dest: /etc/php-fpm.d/www.conf
+    regexp: '(user|group) = apache'
+    replace: '\1 = nginx'
+
+- name: ensure php-fpm is running
+  service: name=php-fpm state=started enabled=yes
+
+# handlers:
+#   - name: restart php
+#     service: name=php-fpm state=restarted

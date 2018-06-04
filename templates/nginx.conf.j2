@@ -1,0 +1,19 @@
+server {
+    server_name {{item.domain}};
+
+    root {{path_base}}/{{item.domain}}/public;
+    access_log {{path_base}}/{{item.domain}}/log/access.log combined buffer=256k flush=60m;
+    error_log {{path_base}}/{{item.domain}}/log/error.log;
+
+    location / {
+        try_files $uri {{item.rootfile}}$is_args$args;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  SERVER_SOFTWARE interbit;
+    }
+}

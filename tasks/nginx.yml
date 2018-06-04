@@ -1,0 +1,34 @@
+---
+- name: Add epel-release repo
+  yum: name=epel-release state=present
+
+- name: Install nginx
+  yum: name=nginx state=present
+
+- name: nginx config copy
+  template: src=templates/nginx.conf.j2 dest=/etc/nginx/conf.d/{{item.domain}}.conf
+  with_items: "{{ domains }}"
+
+- name: Creates directory
+  file: path={{path_base}}/{{item.domain}} state=directory
+  with_items: "{{ domains }}"
+
+- name: Copy files
+  synchronize: src=web/ dest={{path_base}}/{{item.domain}}
+  with_items: "{{ domains }}"
+
+- name: Owner nginx to files
+  file: path={{path_base}} owner=nginx group=nginx state=directory recurse=yes
+
+- name: ensure nginx is running
+  service: name=nginx state=started enabled=yes
+
+- name: Allow firewall http/https
+  command: firewall-cmd --zone=dmz --permanent --add-service=http --add-service=https
+
+- name: Restart firewall
+  command: firewall-cmd --reload
+
+# handlers:
+#   - name: restart nginx
+#     service: name=nginx state=restarted
