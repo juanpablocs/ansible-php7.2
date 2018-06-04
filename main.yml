@@ -3,8 +3,8 @@
   vars:
     path_base: /home/nginx/domains
     domains:
-      - { domain: bajarmimp3.com, rootfile: /index.php }
-      - { domain: adm.mysite.pe, rootfile: /web/app_dev.php }
+      - { domain: mysite.pe, rootfile: /index.php }
+      - { domain: admin.mysite.pe, rootfile: /web/app_dev.php }
   tasks:
     - include_tasks: tasks/nginx.yml
     - include_tasks: tasks/php.yml
